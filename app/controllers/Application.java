@@ -7,18 +7,36 @@ import play.mvc.*;
 
 import views.html.*;
 
+/**
+ * Application controller
+ */
 public class Application extends Controller {
 
+  /**
+   * Task form
+   */
   static Form<Task> taskForm = form(Task.class);
 
+  /**
+   * Index page. Redirects to task list
+   * @return redirect response
+   */
   public static Result index() {
     return redirect(routes.Application.tasks());
   }
 
+  /**
+   * Task list controller action. Will present the task list to the user
+   * @return usually a 200 OK response with the task list template
+   */
   public static Result tasks() {
     return ok(index.render(Task.all(), taskForm));
   }
 
+  /**
+   * Creates a new task in the underlying storage
+   * @return BAD REQUEST on form error, OK otherwise
+   */
   public static Result newTask() {
     Form<Task> filledForm = taskForm.bindFromRequest();
     if (filledForm.hasErrors()) {
@@ -31,7 +49,13 @@ public class Application extends Controller {
     }
   }
 
+  /**
+   * Deletes task with given id
+   * @param id id of the task to delete
+   * @return A redirect to the task list
+   */
   public static Result deleteTask(Long id) {
-    return TODO;
+    Task.delete(id);
+    return redirect(routes.Application.tasks());
   }
 }
